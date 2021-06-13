@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
-
+import dj_database_url
 
 if os.name == 'nt':
     import platform
@@ -36,10 +36,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ja10&ytr#&i&$s$(564(=a(geqzvc0m-78k9gh9^c!xd2cb^#-'
+SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY', 'django-insecure-ja10&ytr#&i&$s$(564(=a(geqzvc0m-78k9gh9^c!xd2cb^#-')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1']
 
@@ -69,7 +69,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware'
+    'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middeleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'ISDTeamProject.urls'
@@ -112,6 +113,8 @@ DATABASES = {
     }
 }
 
+db_from_env = dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(db_from_env)
 # FOR GEODJANGO
 POSTGIS_VERSION = (2, 4, 3)
 # Password validation
